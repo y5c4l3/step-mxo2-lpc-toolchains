@@ -6,7 +6,7 @@ ARG NEXTPNR_COMMIT="4220ce100776381fcaed4ceb2efed722e7ddf474"
 
 RUN apt-get update && TZ=Asia/Shanghai DEBIAN_FRONTEND=noninteractive \
     apt-get -y install cmake clang-format libboost-all-dev build-essential \
-    wget libeigen3-dev build-essential clang bison flex libreadline-dev \
+    wget libeigen3-dev clang bison flex libreadline-dev \
     gawk tcl-dev libffi-dev git graphviz xdot pkg-config python3 \
     libboost-system-dev libboost-python-dev libboost-filesystem-dev zlib1g-dev \
     python3-setuptools python3-serial && \
@@ -33,4 +33,9 @@ RUN cd /build && git clone --recursive https://github.com/YosysHQ/nextpnr.git &&
     cd /build/nextpnr && cmake -DARCH='machxo2' -DMACHXO2_DEVICES='4000' . && make -j8 && make install && \
     rm -rf /build/nextpnr && rm -rf /build
 
+RUN apt-get -y autoremove clang clang-14 clang-format cmake build-essential gcc-11
+
 WORKDIR "/root"
+
+FROM scratch
+COPY --from=0 / /
